@@ -9,13 +9,13 @@ import yt_dlp
 import imageio_ffmpeg
 
 # --- НАСТРОЙКИ ---
-TOKEN = "8689339887:AAGoYXdeU3QyY2xLHc2vvBntyJGLRm4OCsM" # Ваш токен бота (оставьте ваш настоящий токен)
+TOKEN = "8689339887:AAEIwB3C..."  # Ваш токен бота
 PORT = int(os.environ.get("PORT", 8080))
 
-# Путь к ffmpeg, который скачивает imageio-ffmpeg
+# Путь к ffmpeg через imageio-ffmpeg
 ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
-# --- FLASK СЕРВЕР ДЛЯ UPTIME (ЧТОБЫ RENDER НЕ ЗАСЫПАЛ) ---
+# --- FLASK СЕРВЕР ДЛЯ UPTIME (24/7 на Render) ---
 app = Flask('')
 
 @app.route('/')
@@ -74,7 +74,6 @@ async def download_audio(message: types.Message):
         }
 
         try:
-            # Скачивание в отдельном потоке, чтобы не вешать бота
             loop = asyncio.get_running_loop()
             
             def extract():
@@ -94,12 +93,14 @@ async def download_audio(message: types.Message):
 
         except Exception as e:
             print(f"Ошибка: {e}")
-            await status_msg.edit_text(f"❌ Произошла ошибка при скачивании трека.")
+            await status_msg.edit_text("❌ Произошла ошибка при скачивании трека.")
 
 async def main():
-    # Запускаем Flask в фоне для Render
+    # Запускаем Flask в фоне
     keep_alive()
     print("Бот успешно запущен и ждет сообщения...")
+    # Очищаем старые апдейты перед стартом, чтобы избежать конфликтов
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
