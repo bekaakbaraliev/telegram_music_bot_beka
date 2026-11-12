@@ -1,4 +1,4 @@
 aiogram==3.17.0
-yt-dlp==2024.12.23
-imageio-ffmpeg==0.5.1
-flask==3.1.0
+yt-dlp
+imageio-ffmpeg
+flask
