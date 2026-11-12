@@ -51,7 +51,7 @@ async def download_audio(message: types.Message):
     status_msg = await message.answer("⏳ Скачиваю и конвертирую трек...")
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        # Настройки yt-dlp с обходом блокировки YouTube (403 Forbidden)
+        # Настройки yt-dlp с усиленным обходом блокировок
         ydl_opts = {
             'format': 'bestaudio/best',
             'postprocessors': [{
@@ -65,10 +65,11 @@ async def download_audio(message: types.Message):
             'quiet': True,
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9',
             },
             'extractor_args': {
                 'youtube': {
-                    'player-client': ['android', 'web', 'mweb']
+                    'player-client': ['android', 'web']
                 }
             }
         }
@@ -92,14 +93,14 @@ async def download_audio(message: types.Message):
                 await status_msg.edit_text("❌ Не удалось найти готовый файл.")
 
         except Exception as e:
-            print(f"Ошибка: {e}")
-            await status_msg.edit_text("❌ Произошла ошибка при скачивании трека.")
+            error_text = str(e)
+            print(f"Ошибка: {error_text}")
+            # Бот выведет точный текст ошибки в Telegram, чтобы мы поняли причину
+            await status_msg.edit_text(f"❌ Ошибка загрузки:\n<code>{error_text[:300]}</code>", parse_mode="HTML")
 
 async def main():
-    # Запускаем Flask в фоне
     keep_alive()
     print("Бот успешно запущен и ждет сообщения...")
-    # Очищаем старые зависшие сессии, чтобы убрать ошибку ConflictError
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
