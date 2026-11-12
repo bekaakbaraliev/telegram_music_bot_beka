@@ -65,7 +65,7 @@ async def download_music(message: types.Message):
             pass
         return
 
-    ydl_opts = {
+   ydl_opts = {
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -76,8 +76,16 @@ async def download_music(message: types.Message):
         'restrictfilenames': True,
         'ffmpeg_location': ffmpeg_path,
         'quiet': True,
+        # Добавляем защиту от блокировок YouTube (эмуляция браузера)
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+        'extractor_args': {
+            'youtube': {
+                'player-client': ['android', 'web']
+            }
+        }
     }
-
     mp3_filename = None
     try:
         # Скачивание и конвертация
