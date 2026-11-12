@@ -9,7 +9,7 @@ import yt_dlp
 import imageio_ffmpeg
 
 # --- НАСТРОЙКИ ---
-TOKEN = "8689339887:AAEIwB3C..."  # Ваш токен бота
+TOKEN = "8689339887:AAGoYXdeU3QyY2xLHc2vvBntyJGLRm4OCsM"
 PORT = int(os.environ.get("PORT", 8080))
 
 # Путь к ffmpeg через imageio-ffmpeg
@@ -99,7 +99,7 @@ async def main():
     # Запускаем Flask в фоне
     keep_alive()
     print("Бот успешно запущен и ждет сообщения...")
-    # Очищаем старые апдейты перед стартом, чтобы избежать конфликтов
+    # Очищаем старые зависшие сессии, чтобы убрать ошибку ConflictError
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
